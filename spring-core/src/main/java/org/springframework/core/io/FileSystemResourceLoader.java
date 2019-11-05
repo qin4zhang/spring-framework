@@ -38,6 +38,9 @@ package org.springframework.core.io;
 public class FileSystemResourceLoader extends DefaultResourceLoader {
 
 	/**
+	 * DefaultResourceLoader类中没有对 / 开头的file有较好的处理
+	 * 这个类，覆盖写了方法，从而可以专门处理 / 开头的file资源
+	 *
 	 * Resolve resource paths as file system paths.
 	 * <p>Note: Even if a given path starts with a slash, it will get
 	 * interpreted as relative to the current VM working directory.

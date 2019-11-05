@@ -48,6 +48,8 @@ import org.springframework.util.ResourceUtils;
 public abstract class AbstractResource implements Resource {
 
 	/**
+	 * 判断文件是否存在
+	 *
 	 * This implementation checks whether a File can be opened,
 	 * falling back to whether an InputStream can be opened.
 	 * This will cover both directories and content resources.
@@ -57,6 +59,7 @@ public abstract class AbstractResource implements Resource {
 		// Try file existence: can we find the file in the file system?
 		if (isFile()) {
 			try {
+				// 基于 File 的方式去判断文件是否存在
 				return getFile().exists();
 			}
 			catch (IOException ex) {
@@ -68,6 +71,7 @@ public abstract class AbstractResource implements Resource {
 		}
 		// Fall back to stream existence: can we open the stream?
 		try {
+			// 基于 InputStream 判断
 			getInputStream().close();
 			return true;
 		}
@@ -81,6 +85,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 文件存在，则一直可读
 	 * This implementation always returns {@code true} for a resource
 	 * that {@link #exists() exists} (revised as of 5.1).
 	 */
@@ -90,6 +95,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 文件未打开
 	 * This implementation always returns {@code false}.
 	 */
 	@Override
@@ -98,6 +104,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 不为 File
 	 * This implementation always returns {@code false}.
 	 */
 	@Override
@@ -106,6 +113,8 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 子类实现
+	 *
 	 * This implementation throws a FileNotFoundException, assuming
 	 * that the resource cannot be resolved to a URL.
 	 */
@@ -150,6 +159,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 根据输入流，获取资源的内容字节长度
 	 * This implementation reads the entire InputStream to calculate the
 	 * content length. Subclasses will almost always be able to provide
 	 * a more optimal version of this, e.g. checking a File length.
@@ -181,6 +191,8 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 资源最后的修改时间
+	 *
 	 * This implementation checks the timestamp of the underlying File,
 	 * if available.
 	 * @see #getFileForLastModifiedCheck()
@@ -209,6 +221,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 子类实现
 	 * This implementation throws a FileNotFoundException, assuming
 	 * that relative resources cannot be created for this resource.
 	 */
@@ -218,6 +231,7 @@ public abstract class AbstractResource implements Resource {
 	}
 
 	/**
+	 * 默认为null，子类实现处理
 	 * This implementation always returns {@code null},
 	 * assuming that this resource type does not have a filename.
 	 */
