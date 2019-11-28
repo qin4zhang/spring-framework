@@ -92,25 +92,32 @@ public class XmlValidationModeDetector {
 		// Peek into the file to look for DOCTYPE.
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		try {
+			// 是否为 DTD 验证模式，默认不为，则应该是 XSD 模式
 			boolean isDtdValidated = false;
 			String content;
+			// 一行一行读取输入
 			while ((content = reader.readLine()) != null) {
 				content = consumeCommentTokens(content);
+				// 注释或者空，不往下走，继续循环
 				if (this.inComment || !StringUtils.hasText(content)) {
 					continue;
 				}
+				// 包含DOCTYPE，则是 DTD 验证模式
 				if (hasDoctype(content)) {
 					isDtdValidated = true;
 					break;
 				}
+				// hasOpeningTag 方法会校验，如果这一行有 < ，并且 < 后面跟着的是字母，则返回 true 。
 				if (hasOpeningTag(content)) {
 					// End of meaningful data...
 					break;
 				}
 			}
+			// 返回 DTD 或者 XSD 验证模式
 			return (isDtdValidated ? VALIDATION_DTD : VALIDATION_XSD);
 		}
 		catch (CharConversionException ex) {
+			// 抛异常，选择 自动验证模式
 			// Choked on some character encoding...
 			// Leave the decision up to the caller.
 			return VALIDATION_AUTO;
@@ -138,8 +145,12 @@ public class XmlValidationModeDetector {
 			return false;
 		}
 		int openTagIndex = content.indexOf('<');
-		return (openTagIndex > -1 && (content.length() > openTagIndex + 1) &&
-				Character.isLetter(content.charAt(openTagIndex + 1)));
+		// 存在这个字符
+		return (openTagIndex > -1
+				// 字符后面还有内容
+				&& (content.length() > openTagIndex + 1)
+				// 这个内容还是 字母
+				&& Character.isLetter(content.charAt(openTagIndex + 1)));
 	}
 
 	/**
@@ -149,7 +160,9 @@ public class XmlValidationModeDetector {
 	 */
 	@Nullable
 	private String consumeCommentTokens(String line) {
+		// 该行内容是否存在 <!-- 这个
 		int indexOfStartComment = line.indexOf(START_COMMENT);
+		// 不存在 开始字符，并且 该行内容不包含 --> 这个结束符，说明不是注释，可以返回
 		if (indexOfStartComment == -1 && !line.contains(END_COMMENT)) {
 			return line;
 		}

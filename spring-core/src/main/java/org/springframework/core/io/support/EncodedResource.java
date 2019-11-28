@@ -54,6 +54,8 @@ public class EncodedResource implements InputStreamSource {
 
 
 	/**
+	 * 将 resource 编码
+	 *
 	 * Create a new {@code EncodedResource} for the given {@code Resource},
 	 * not specifying an explicit encoding or {@code Charset}.
 	 * @param resource the {@code Resource} to hold (never {@code null})
